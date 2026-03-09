@@ -46,7 +46,7 @@ export default function Home() {
               Features
             </a>
             <a
-              href="#"
+              href="/hills"
               className="rounded-lg bg-sky-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950"
             >
               View hills
