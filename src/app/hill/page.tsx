@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 
 export default function HillPage(){
-    const apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=44.50&longitude=-80.31&hourly=temperature_2m,wind_speed_80m,wind_speed_10m,wind_speed_120m";
+    const apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=44.50&longitude=-80.31&hourly=temperature_2m,wind_speed_10m,wind_gusts_10m,snowfall,rain";
     
     async function fetchData() {
         try {
