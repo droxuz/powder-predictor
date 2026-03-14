@@ -1,3 +1,5 @@
+//clean-weather.ts
+
 type OpenMeteoHourly = {
   time?: string[];
   temperature_2m?: number[];
@@ -10,7 +12,7 @@ type OpenMeteoHourly = {
 export type CleanConditionRow = {
   hill_id: number;
   timestamp: string;
-  temperature: number | null;
+  temperature_2m: number | null;
   wind_speed_10m: number | null;
   wind_gusts_10m: number | null;
   snowfall: number | null;
@@ -27,7 +29,7 @@ export function cleanWeatherData(hill_id: number, hourly: OpenMeteoHourly): Clea
   return times.map((timestamp, i) => ({
     hill_id,
     timestamp,
-    temperature: safeNum(hourly.temperature_2m?.[i]),
+    temperature_2m: safeNum(hourly.temperature_2m?.[i]),
     wind_speed_10m: safeNum(hourly.wind_speed_10m?.[i]),
     wind_gusts_10m: safeNum(hourly.wind_gusts_10m?.[i]),
     snowfall: safeNum(hourly.snowfall?.[i]),
