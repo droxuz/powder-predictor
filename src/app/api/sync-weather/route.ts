@@ -9,7 +9,11 @@ type Hill = {
     longitude: number;
 };
 
-export async function GET() {
+export async function GET(req: Request){
+    const auth = req.headers.get("authorization");
+    if( auth !== `Bearer ${process.env.VERCEL_CRON}`) {
+        return Response.json({error: "Unauthorized"}, {status: 401});
+    }
     try {
         const rows = await sql`
         SELECT id, latitude, longitude

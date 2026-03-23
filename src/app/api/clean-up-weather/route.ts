@@ -2,7 +2,11 @@ import { sql } from "@/db-connection/db";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request){
+    const auth = req.headers.get("authorization");
+    if( auth !== `Bearer ${process.env.VERCEL_CRON}`) {
+        return Response.json({error: "Unauthorized"}, {status: 401});
+    }
   try {
     console.log("Cleanup cutoff:", new Date());
 

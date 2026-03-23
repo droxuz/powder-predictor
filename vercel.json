@@ -1,0 +1,13 @@
+{
+    "$schema": "",
+    "crons":[
+        {
+            "path": "/api/sync-weather",
+            "schedule":"0 */6 * * *"
+        },
+        {
+            "path": "/api/clean-up-weather",
+            "schedule":"10  */6 * * *"
+        }
+    ]
+}

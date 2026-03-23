@@ -12,8 +12,11 @@ type weatherRow = {
     snowfall: number;
 };
 
-export async function GET(){
-    
+export async function GET(req: Request){
+    const auth = req.headers.get("authorization");
+    if( auth !== `Bearer ${process.env.VERCEL_CRON}`) {
+        return Response.json({error: "Unauthorized"}, {status: 401});
+    }
     try {
         const rows = await sql`
     SELECT
@@ -26,6 +29,10 @@ export async function GET(){
         rain
     FROM hill_conditions
     ORDER BY hill_id, timestamp`;
+        //Iterate rows
+        //Per objects of row in rows in create a score and insert into powder_prediction_score
+        
+        
 
     
     } catch {
