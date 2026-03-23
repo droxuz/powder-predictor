@@ -1,0 +1,12 @@
+name: Sync Weather
+on: 
+  schedule:
+    - cron "0 0 * * *" #0 minutes and 0 hour everday.
+  workflow_dispatch:
+jobs:
+  build: 
+    name: API Calls
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call sync-weather
+        run: |
