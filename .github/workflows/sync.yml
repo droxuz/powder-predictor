@@ -20,5 +20,5 @@ jobs:
 
       - name: Call cleanup-weather
         run: |
-          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/cleanup-weather" \
+          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/clean-up-weather" \
           -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
