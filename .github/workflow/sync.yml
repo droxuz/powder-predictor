@@ -1,7 +1,7 @@
 name: Sync Weather
 on: 
   schedule:
-    - cron "0 0 * * *" #0 minutes and 0 hour everday.
+    - cron: "0 5 * * *" #0 minutes and 0 hour everday.
   workflow_dispatch:
 jobs:
   build: 
@@ -10,3 +10,15 @@ jobs:
     steps:
       - name: Call sync-weather
         run: |
+          curl -fsS -X GET "${{ secrets.APP_BASE_URL }}/api/sync-weather" \
+          -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
+
+      - name: Call calculate-scores
+        run: |
+          curl -fsS -X GET "${{ secrets.APP_BASE_URL }}/api/calculate-scores" \
+          -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
+
+      - name: Call cleanup-weather
+        run: |
+          curl -fsS -X GET "${{ secrets.APP_BASE_URL }}/api/cleanup-weather" \
+          -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
