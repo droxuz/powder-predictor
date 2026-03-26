@@ -10,15 +10,15 @@ jobs:
     steps:
       - name: Call sync-weather
         run: |
-          curl -fsS -X GET "${{ secrets.APP_BASE_URL }}/api/sync-weather" \
+          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/sync-weather" \
           -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
 
       - name: Call calculate-scores
         run: |
-          curl -fsS -X GET "${{ secrets.APP_BASE_URL }}/api/calculate-scores" \
+          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/calculate-scores" \
           -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
 
       - name: Call cleanup-weather
         run: |
-          curl -fsS -X GET "${{ secrets.APP_BASE_URL }}/api/cleanup-weather" \
+          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/cleanup-weather" \
           -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
