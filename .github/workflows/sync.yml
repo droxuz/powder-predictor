@@ -13,9 +13,9 @@ jobs:
           curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/sync-weather" \
           -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
 
-      - name: Call calculate-scores
+      - name: Call predictor-score
         run: |
-          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/calculate-scores" \
+          curl -fsSL -X GET "${{ secrets.APP_BASE_URL }}/api/predictor-score" \
           -H "Authorization: Bearer ${{ secrets.SECRET_KEY_CRON }}"
 
       - name: Call cleanup-weather
