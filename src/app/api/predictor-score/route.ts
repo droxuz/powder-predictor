@@ -1,5 +1,5 @@
 import {sql} from "@/db-connection/db";
-import { calculatrPowderScore } from "@/db-connection/powder-score-calculator";
+import { calculatePowderScore } from "@/db-connection/powder-score-calculator";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +41,7 @@ export async function GET(req: Request){
             rain: row.rain === null ? null : Number(row.rain),
         }));
         for(const row of conditions){
-            const powderScore = calculatrPowderScore(row);
+            const powderScore = calculatePowderScore(row);
             await sql`
             INSERT INTO powder_prediction_score (hill_id, timestamp, powder_score) 
             VALUES(${row.hill_id}, ${row.timestamp}, ${powderScore})
