@@ -1,4 +1,37 @@
+"use client";
+
+import { useState,useEffect } from 'react';
+import Link from 'next/link';
+
+
+type hillOverview = {
+    id:number;
+    name:string;
+    location:string;
+    latitude:number;
+    longitude:number;
+    description:string;
+}
+
 export default function HillsPage(){
+    const [hills,setHills] = useState<hillOverview[]>([]);
+    const [loading,setLoading] = useState(true);
+    useEffect(()=>{
+        async function fetchHills(){
+            try{
+                const resp = await fetch("/api/hills");
+                const data = await resp.json();
+                if(data.success){
+                    setHills(data.data);
+                }else{
+                    console.error("Failed to fetch hills:", data.message);
+                }            
+            } catch(error){
+                console.error("Error fetching hills:", error);
+            }
+        }
+    });
+
     return (
         <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
