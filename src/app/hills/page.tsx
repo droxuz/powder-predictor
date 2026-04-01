@@ -11,6 +11,12 @@ type hillOverview = {
     latitude:number;
     longitude:number;
     description:string;
+    daily_snowfall: null | number;
+    daily_rain: null | number;
+    min_temp: null | number;
+    max_temp: null | number;
+    max_wind: null | number;
+    best_powder_score: null | number;
 }
 
 export default function HillsPage(){
@@ -28,20 +34,44 @@ export default function HillsPage(){
                 }            
             } catch(error){
                 console.error("Error fetching hills:", error);
+            } finally{
+                setLoading(false);
             }
         }
-    });
+        fetchHills();
+    },[]);
 
+    
     return (
-        <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-            <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl dark:bg-sky-400/15" />
-            <div className="absolute -bottom-28 -left-24 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl dark:bg-cyan-300/10" />
-            </div>
-            <h1 className="text-2xl font-bold text-center p-4 pt-8 font-sans">Hills Page</h1>
-            <a href="/hill" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Go to Hill Page
-            </a>
+        <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 relative">
+      
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl dark:bg-sky-400/15" />
+        <div className="absolute -bottom-28 -left-24 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl dark:bg-cyan-300/10" />
         </div>
-    )
-}
+
+    <h1 className="text-3xl font-bold text-center p-6 pt-10">
+        Ski Hills
+    </h1>
+
+    {loading ? (<p className="text-center">Loading hills...</p>) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        {hills.map((hill) => (
+            <Link
+            key={hill.id}
+            href={`/hills/${hill.id}`}
+            className="bg-slate-200 dark:bg-slate-800 rounded-xl p-4 shadow hover:scale-105 transition"
+            >
+            <h2 className="text-xl font-semibold">{hill.name}</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+            {hill.location}
+            </p>
+            <p className="mt-2 text-sm line-clamp-3">
+            {hill.description}
+            </p>
+            </Link>
+        ))}
+    </div>
+    )}
+    </div>
+);}

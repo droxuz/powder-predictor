@@ -17,11 +17,11 @@ export function calculatePowderScore(row: WeatherRow): number {
     const rain = row.rain ?? 0;
 
     // Temperature
-    if (temp > 5) score -= 30;
-    else if (temp > 2) score -= 15;
-    else if (temp >= 0) score -= 6;
+    if (temp > 5) score -= 40;
+    else if (temp > 2) score -= 25;
+    else if (temp >= 0) score -= 15;
     else if (temp >= -3) score += 10;
-    else if (temp >= -8) score += 16;
+    else if (temp >= -8) score += 20;
     else if (temp >= -15) score += 8;
     else score -= 8;
 
