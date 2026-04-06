@@ -37,7 +37,7 @@ export default function HillCard({ hill }: {hill : hillOverview}){
                     </div>
 
                     <div className="text-right">
-                        <p className="text-xs uppercase text-slate-500">Day </p>
+                        <p className="text-xs uppercase text-slate-500">Day Score</p>
                         <p className="text-2xl font-bold text-sky-600 dark:text-sky-400">
                             {hill.avg_powder_score !== null
                                 ? hill.avg_powder_score.toFixed(0)
@@ -55,7 +55,8 @@ export default function HillCard({ hill }: {hill : hillOverview}){
                     <StatBox label="Snow" value={hill.daily_snowfall} unit="cm" />
                     <StatBox label="Rain" value={hill.daily_rain} unit="mm" />
                     <StatBox label="Wind" value={hill.max_wind} unit="km/h" />
-                    <StatBox label="Temp" value={hill.min_temp} unit="°C" />
+                    <StatBox label="Min Temp" value={hill.min_temp} unit="°C" />
+                    <StatBox label="Max Temp" value={hill.max_temp} unit="°C" />
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
