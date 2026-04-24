@@ -11,6 +11,7 @@ type weatherRow = {
     wind_gusts_10m: number | null;
     rain: number | null;
     snowfall: number | null;
+    snow_depth: number | null;
 };
 
 export async function GET(req: Request){
@@ -27,8 +28,10 @@ export async function GET(req: Request){
             wind_speed_10m,
             wind_gusts_10m,
             snowfall,
-            rain
+            rain,
+            snow_depth
         FROM hill_conditions
+        WHERE timestamp >= date_trunc('hour', timezone('America/Toronto', now()))
         ORDER BY hill_id, timestamp`;
         
         const conditions: weatherRow[] = rows.map((row: any) => ({
@@ -39,6 +42,7 @@ export async function GET(req: Request){
             wind_gusts_10m: row.wind_gusts_10m === null ? null : Number(row.wind_gusts_10m),
             snowfall: row.snowfall === null ? null : Number(row.snowfall),
             rain: row.rain === null ? null : Number(row.rain),
+            snow_depth: row.snow_depth === null ? null : Number(row.snow_depth),
         }));
         for(const row of conditions){
             const powderScore = calculatePowderScore(row);
@@ -55,8 +59,8 @@ export async function GET(req: Request){
             message: "Success to calculate and insert scores"
         });
     
-    } catch {
-        console.error("Error");
+    } catch (error){
+        console.error("Error", error);
         return Response.json({
             success: false,
             message: "Score calculation failed",

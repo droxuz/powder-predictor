@@ -33,13 +33,16 @@ export async function GET(req: Request){
     });
 
   } catch (error: any) {
-    await sql`ROLLBACK`;
+    try {
+      await sql`ROLLBACK`;
+    } catch { }
+
     console.error("Cleanup failed:", error);
 
     return Response.json(
       {
         success: false,
-        message: error?.message || "Cleanup failed"
+        message: error?.message || "Cleanup failed",
       },
       { status: 500 }
     );

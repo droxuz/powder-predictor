@@ -7,6 +7,7 @@ type OpenMeteoHourly = {
   wind_gusts_10m?: number[];
   snowfall?: number[];
   rain?: number[];
+  snow_depth?: number[];
 };
 
 export type CleanConditionRow = {
@@ -17,6 +18,7 @@ export type CleanConditionRow = {
   wind_gusts_10m: number | null;
   snowfall: number | null;
   rain: number | null;
+  snow_depth: number | null;
 };
 
 function safeNum(value: unknown): number | null {
@@ -34,5 +36,6 @@ export function cleanWeatherData(hill_id: number, hourly: OpenMeteoHourly): Clea
     wind_gusts_10m: safeNum(hourly.wind_gusts_10m?.[i]),
     snowfall: safeNum(hourly.snowfall?.[i]),
     rain: safeNum(hourly.rain?.[i]),
+    snow_depth: safeNum(hourly.rain?.[i]),
   }));
 }

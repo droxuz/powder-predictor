@@ -6,7 +6,9 @@ CREATE TABLE hills (
     location VARCHAR(255) NOT NULL,
     latitude DOUBLE PRECISION NOT NULL,
     longitude DOUBLE PRECISION NOT NULL,
-    description TEXT
+    description TEXT,
+    open_time TIME NOT NULL,
+    close_time TIME NOT NULL
 );
 
 CREATE TABLE hill_conditions (
@@ -18,6 +20,7 @@ CREATE TABLE hill_conditions (
     wind_gusts_10m DOUBLE PRECISION,
     rain DOUBLE PRECISION,
     snowfall DOUBLE PRECISION,
+    snow_depth DOUBLE PRECISION,
     FOREIGN KEY (hill_id) REFERENCES hills(id) ON DELETE CASCADE,
     UNIQUE (hill_id, timestamp)
 );

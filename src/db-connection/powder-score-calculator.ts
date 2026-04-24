@@ -5,9 +5,14 @@ type WeatherRow = {
     wind_gusts_10m: number | null;
     rain: number | null;
     snowfall: number | null;
+    snow_depth: number | null;
 };
 
 export function calculatePowderScore(row: WeatherRow): number {
+
+    //No Snow base
+    if (row.snow_depth !== null && row.snow_depth < 0.10) return 0;
+
     let score = 50;
 
     const temp = row.temperature_2m ?? 0;

@@ -32,7 +32,7 @@ export async function GET(req: Request){
             `https://api.open-meteo.com/v1/forecast` +
             `?latitude=${hill.latitude}` +
             `&longitude=${hill.longitude}` +
-            `&hourly=temperature_2m,wind_speed_10m,wind_gusts_10m,snowfall,rain` +
+            `&hourly=temperature_2m,wind_speed_10m,wind_gusts_10m,snowfall,rain,snow_depth` +
             `&forecast_days=7`+`&timezone=America%2FToronto`;
 
         const response = await fetch(url, {
@@ -63,7 +63,8 @@ export async function GET(req: Request){
                 wind_speed_10m,
                 wind_gusts_10m,
                 rain,
-                snowfall
+                snowfall,
+                snow_depth
             )
             VALUES (
                 ${row.hill_id},
@@ -72,7 +73,8 @@ export async function GET(req: Request){
                 ${row.wind_speed_10m},
                 ${row.wind_gusts_10m},
                 ${row.rain},
-                ${row.snowfall}
+                ${row.snowfall},
+                ${row.snow_depth}
             )
             ON CONFLICT (hill_id, timestamp)
             DO UPDATE SET
@@ -80,7 +82,8 @@ export async function GET(req: Request){
                 wind_speed_10m = EXCLUDED.wind_speed_10m,
                 wind_gusts_10m = EXCLUDED.wind_gusts_10m,
                 rain = EXCLUDED.rain,
-                snowfall = EXCLUDED.snowfall
+                snowfall = EXCLUDED.snowfall,
+                snow_depth = EXCLUDED.snow_depth
             `;
         }
     }
