@@ -14,6 +14,51 @@ type weatherRow = {
     snow_depth: number | null;
 };
 
+type DbWeatherRow = {
+    hill_id: number | string;
+    timestamp: string;
+    temperature_2m: number | string | null;
+    wind_speed_10m: number | string | null;
+    wind_gusts_10m: number | string | null;
+    rain: number | string | null;
+    snowfall: number | string | null;
+    snow_depth: number | string | null;
+};
+
+type PowderScoreRow = {
+    hill_id: number;
+    timestamp: string;
+    powder_score: number;
+};
+
+async function upsertPowderScores(rows: PowderScoreRow[]) {
+    if (rows.length === 0) return;
+
+    const hillIds = rows.map((row) => row.hill_id);
+    const timestamps = rows.map((row) => row.timestamp);
+    const powderScores = rows.map((row) => row.powder_score);
+
+    await sql`
+        INSERT INTO powder_prediction_score (hill_id, timestamp, powder_score)
+        SELECT
+            input.hill_id,
+            input.timestamp,
+            input.powder_score
+        FROM unnest(
+            ${hillIds}::int[],
+            ${timestamps}::timestamp[],
+            ${powderScores}::double precision[]
+        ) AS input(
+            hill_id,
+            timestamp,
+            powder_score
+        )
+        ON CONFLICT(hill_id, timestamp)
+        DO UPDATE SET
+            powder_score = EXCLUDED.powder_score
+    `;
+}
+
 export async function GET(req: Request){
     const auth = req.headers.get("authorization");
     if( auth !== `Bearer ${process.env.SECRET_KEY_CRON}`) {
@@ -34,7 +79,7 @@ export async function GET(req: Request){
         WHERE timestamp >= date_trunc('hour', timezone('America/Toronto', now()))
         ORDER BY hill_id, timestamp`;
         
-        const conditions: weatherRow[] = rows.map((row: any) => ({
+        const conditions: weatherRow[] = (rows as DbWeatherRow[]).map((row) => ({
             hill_id: Number(row.hill_id),
             timestamp: row.timestamp,
             temperature_2m: row.temperature_2m === null ? null : Number(row.temperature_2m),
@@ -44,16 +89,14 @@ export async function GET(req: Request){
             rain: row.rain === null ? null : Number(row.rain),
             snow_depth: row.snow_depth === null ? null : Number(row.snow_depth),
         }));
-        for(const row of conditions){
-            const powderScore = calculatePowderScore(row);
-            await sql`
-            INSERT INTO powder_prediction_score (hill_id, timestamp, powder_score) 
-            VALUES(${row.hill_id}, ${row.timestamp}, ${powderScore})
-            ON CONFLICT(hill_id, timestamp)
-            DO UPDATE SET 
-                powder_score = EXCLUDED.powder_score
-            `;
-        }
+
+        const powderScoreRows: PowderScoreRow[] = conditions.map((row) => ({
+            hill_id: row.hill_id,
+            timestamp: row.timestamp,
+            powder_score: calculatePowderScore(row),
+        }));
+
+        await upsertPowderScores(powderScoreRows);
         return Response.json({
             success: true,
             message: "Success to calculate and insert scores"
