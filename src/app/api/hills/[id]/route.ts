@@ -116,25 +116,25 @@ export async function GET(
         }
 
         const hourlyRows = await sql`
-      SELECT
-        date_part('hour', hc.timestamp)::int AS hour,
-        hc.timestamp,
-        ps.powder_score,
-        hc.temperature_2m,
-        hc.wind_speed_10m,
-        hc.wind_gusts_10m,
-        hc.snowfall,
-        hc.rain,
-        hc.snow_depth
-      FROM hill_conditions hc
-      LEFT JOIN powder_prediction_score ps
-        ON ps.hill_id = hc.hill_id
-       AND ps.timestamp = hc.timestamp
-      WHERE hc.hill_id = ${hillId}
-        AND hc.timestamp >= date_trunc('day', timezone('America/Toronto', now()))
-        AND hc.timestamp < date_trunc('day', timezone('America/Toronto', now())) + interval '1 day'
-      ORDER BY hc.timestamp ASC
-    `;
+  SELECT
+    date_part('hour', timezone('America/Toronto', hc.timestamp))::int AS hour,
+    hc.timestamp,
+    ps.powder_score,
+    hc.temperature_2m,
+    hc.wind_speed_10m,
+    hc.wind_gusts_10m,
+    hc.snowfall,
+    hc.rain,
+    hc.snow_depth
+  FROM hill_conditions hc
+  LEFT JOIN powder_prediction_score ps
+    ON ps.hill_id = hc.hill_id
+   AND ps.timestamp = hc.timestamp
+  WHERE hc.hill_id = ${hillId}
+    AND hc.timestamp >= date_trunc('day', timezone('America/Toronto', now()))
+    AND hc.timestamp < date_trunc('day', timezone('America/Toronto', now())) + interval '7 days'
+  ORDER BY hc.timestamp ASC
+`;
 
         const h: any = hillRows[0];
 

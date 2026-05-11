@@ -29,7 +29,7 @@ type HillForecastChartsProps = {
 };
 
 type ForecastChartPoint = {
-    time: string;
+    timestamp: string;
     powderScore: number | null;
     temperature: number | null;
     windSpeed: number | null;
@@ -55,8 +55,23 @@ const metricConfig: Record<string, MetricConfig> = {
     snowDepth: { label: "Snow depth", unit: " cm", decimals: 1 },
 };
 
-function formatHour(timestamp: string) {
-    return new Date(timestamp).toLocaleTimeString("en-CA", {
+function formatAxisTimestamp(timestamp: string) {
+    const date = new Date(timestamp);
+
+    return date.toLocaleString("en-CA", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+    });
+}
+
+function formatTooltipTimestamp(value: unknown) {
+    const date = new Date(String(value));
+
+    return date.toLocaleString("en-CA", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
         hour: "numeric",
         minute: "2-digit",
     });
@@ -79,6 +94,7 @@ function formatAxisValue(value: unknown) {
 
 const axisTick = { fill: "#94a3b8", fontSize: 12 };
 const chartMargin = { top: 18, right: 12, left: -16, bottom: 0 };
+
 const tooltipStyle = {
     background: "#020617",
     border: "1px solid #1e293b",
@@ -87,7 +103,7 @@ const tooltipStyle = {
 
 export default function HillForecastCharts({ hourly }: HillForecastChartsProps) {
     const chartData: ForecastChartPoint[] = hourly.map((slot) => ({
-        time: formatHour(slot.timestamp),
+        timestamp: slot.timestamp,
         powderScore: slot.powder_score,
         temperature: slot.temperature_2m,
         windSpeed: slot.wind_speed_10m,
@@ -104,14 +120,17 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                     <p className="text-xs font-medium uppercase tracking-[0.3em] text-sky-400">
                         Data Visualization
                     </p>
+
                     <h2 className="mt-2 text-2xl font-semibold text-white">
-                        All Hourly Data
+                        Forecast Data
                     </h2>
+
                     <p className="text-sm text-slate-400">
                         Recharts combines score, temperature, wind, gusts,
-                        precipitation, and snow depth for today.
+                        precipitation, and snow depth.
                     </p>
                 </div>
+
                 <p className="text-xs uppercase tracking-widest text-slate-500">
                     {chartData.length} hourly samples
                 </p>
@@ -122,17 +141,20 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                     No hourly data available to visualize.
                 </p>
             ) : (
-                <div className="h-[34rem] rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[34rem] min-h-[34rem] min-w-0 rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
+                    <ResponsiveContainer width="100%" height={500}>
                         <ComposedChart data={chartData} margin={chartMargin}>
                             <CartesianGrid stroke="#1e293b" strokeDasharray="4 4" />
+
                             <XAxis
-                                dataKey="time"
-                                minTickGap={18}
+                                dataKey="timestamp"
+                                minTickGap={28}
                                 tick={axisTick}
                                 tickLine={false}
                                 axisLine={{ stroke: "#334155" }}
+                                tickFormatter={formatAxisTimestamp}
                             />
+
                             <YAxis
                                 yAxisId="score"
                                 domain={[0, 100]}
@@ -148,6 +170,7 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                     fontSize: 12,
                                 }}
                             />
+
                             <YAxis
                                 yAxisId="weather"
                                 orientation="right"
@@ -163,15 +186,19 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                     fontSize: 12,
                                 }}
                             />
+
                             <Tooltip
                                 formatter={formatTooltipValue}
+                                labelFormatter={formatTooltipTimestamp}
                                 contentStyle={tooltipStyle}
                                 labelStyle={{ color: "#e2e8f0" }}
                             />
+
                             <Legend
                                 iconType="circle"
                                 wrapperStyle={{ color: "#cbd5e1", fontSize: 12 }}
                             />
+
                             <ReferenceLine
                                 yAxisId="score"
                                 y={65}
@@ -184,6 +211,7 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                     position: "insideTopLeft",
                                 }}
                             />
+
                             <Bar
                                 yAxisId="score"
                                 dataKey="snowfall"
@@ -191,6 +219,7 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                 fill="#bae6fd"
                                 radius={[6, 6, 0, 0]}
                             />
+
                             <Bar
                                 yAxisId="score"
                                 dataKey="rain"
@@ -198,6 +227,7 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                 fill="#0ea5e9"
                                 radius={[6, 6, 0, 0]}
                             />
+
                             <Line
                                 yAxisId="score"
                                 type="monotone"
@@ -207,6 +237,7 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                 strokeWidth={3}
                                 connectNulls
                             />
+
                             <Line
                                 yAxisId="score"
                                 type="monotone"
@@ -217,26 +248,29 @@ export default function HillForecastCharts({ hourly }: HillForecastChartsProps) 
                                 dot={false}
                                 connectNulls
                             />
+
                             <Line
                                 yAxisId="weather"
                                 type="monotone"
                                 dataKey="temperature"
                                 name="temperature"
                                 stroke="#a78bfa"
-                                strokeWidth={2}
+                                strokeWidth={1}
                                 dot={false}
                                 connectNulls
                             />
+
                             <Line
                                 yAxisId="weather"
                                 type="monotone"
                                 dataKey="windSpeed"
                                 name="windSpeed"
                                 stroke="#22d3ee"
-                                strokeWidth={2}
+                                strokeWidth={1}
                                 dot={false}
                                 connectNulls
                             />
+
                             <Line
                                 yAxisId="weather"
                                 type="monotone"
