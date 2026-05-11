@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import SummaryCard from "@/components/SummaryCard";
 import SkeletonHillDetail from "@/components/SkeletonHillDetail";
+import HillForecastCharts from "@/components/HillForecastCharts";
 
 type HourlySlot = {
     hour: number;
@@ -76,8 +77,10 @@ export default function HillDetailPage() {
                 }
 
                 setHill(data.data);
-            } catch (err: any) {
-                setError(err.message || "Something went wrong");
+            } catch (err: unknown) {
+                setError(
+                    err instanceof Error ? err.message : "Something went wrong"
+                );
             } finally {
                 setLoading(false);
             }
@@ -202,6 +205,8 @@ export default function HillDetailPage() {
                         }
                     />
                 </section>
+
+                <HillForecastCharts hourly={hill.hourly} />
 
                 <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur">
                     <div className="mb-6 flex items-center justify-between">
