@@ -166,8 +166,8 @@ export default function HillDetailPage() {
                 >
                     ← Back to all hills
                 </Link>
-
-                <section className="flex flex-col gap-6 border-b border-slate-800 pb-8 lg:flex-row lg:items-end lg:justify-between">
+                
+                <section className="flex flex-col gap-6 pb-8 lg:flex-row lg:items-end lg:justify-between">
                     <div>
                         <p className="mb-2 text-xs font-medium uppercase tracking-[0.3em] text-sky-400">
                             {hill.location ?? "Ontario"}
@@ -188,7 +188,7 @@ export default function HillDetailPage() {
                                 "No description available."}
                         </p>
                     </div>
-
+                    
                     <div className="rounded-2xl border border-sky-900/60 bg-sky-950/30 px-6 py-5 text-right backdrop-blur">
                         <p className="text-xs uppercase tracking-widest text-slate-500">
                             Day Score
@@ -205,10 +205,22 @@ export default function HillDetailPage() {
                                 hill.avg_powder_score
                             )}
                         </p>
+                    
+                    </div>
+                    
+                </section>
+                <section className="border-b border-slate-800 pb-3">
+                    <div className= "">
+                        <p className=" text-[20px] uppercase tracking-widest text-slate-300 font-semibold">
+                            Hours of Operations
+                        </p>
+                        <p className="truncate text-lg font-semibold text-sky-300">
+                            {hill.open_time && hill.close_time? `${hill.open_time}–${hill.close_time}`: "--"}
+                        </p>
                     </div>
                 </section>
 
-                <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+                <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
                     <SummaryCard
                         label="Peak Score"
                         value={formatValue(
@@ -265,15 +277,6 @@ export default function HillDetailPage() {
                         value={hill.lift_risk ?? "--"}
                     />
 
-                    <SummaryCard
-                        label="Hours"
-                        value={
-                            hill.open_time &&
-                            hill.close_time
-                                ? `${hill.open_time}–${hill.close_time}`
-                                : "--"
-                        }
-                    />
                 </section>
 
                 <section className="mt-10">
